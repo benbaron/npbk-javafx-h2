@@ -1,0 +1,25 @@
+.root {
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-font-size: 12px;
+}
+.table-view {
+    -fx-background-color: white;
+}
+.table-row-cell.row-error {
+    -fx-background-color: #ffd6d6;
+}
+.table-row-cell.row-warning {
+    -fx-background-color: #fff4c2;
+}
+.table-row-cell.row-dirty {
+    -fx-font-style: italic;
+}
+.placeholder {
+    -fx-background-color: #f6f7f9;
+}
+.label {
+    -fx-wrap-text: true;
+}
+.text-area {
+    -fx-font-family: "Consolas", "Courier New", monospace;
+}

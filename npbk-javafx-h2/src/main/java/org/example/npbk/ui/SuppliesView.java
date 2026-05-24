@@ -1,0 +1,25 @@
+package org.example.npbk.ui;
+
+import java.math.BigDecimal;
+import org.example.npbk.model.*; import org.example.npbk.service.SupplyService;
+import javafx.collections.*; import javafx.geometry.Insets; import javafx.scene.Node; import javafx.scene.control.*; import javafx.scene.layout.*;
+
+public class SuppliesView {
+    private final BorderPane root=new BorderPane(); private final TableView<SupplyItemViewModel> table=new TableView<>(); private final ObservableList<SupplyItemViewModel> rows=FXCollections.observableArrayList(); private final TextArea validationArea=new TextArea(); private final Label status=new Label("Ready."); private final SupplyService service;
+    public SuppliesView(SupplyService service){ this.service=service; build(); load(); }
+    public Node getRoot(){return root;}
+    private void build(){ table.setEditable(true); table.getSelectionModel().setCellSelectionEnabled(true); table.setItems(rows);
+        table.getColumns().add(SpreadsheetUi.rowNumberColumn(table)); table.getColumns().add(text("Description","desc",260)); table.getColumns().add(money("Qty","qty",90,true)); table.getColumns().add(money("Unit Cost","unit",110,true)); table.getColumns().add(money("Total Value","total",120,false)); table.getColumns().add(text("Used For","used",160)); table.getColumns().add(text("Location","location",160)); table.getColumns().add(text("Guardian","guardian",160)); table.getColumns().add(text("Notes","notes",240)); table.getColumns().add(stateCol());
+        table.getSelectionModel().selectedItemProperty().addListener((o,old,row)->show(row)); SpreadsheetUi.installNavigation(table);
+        Button add=new Button("Add Supply"); add.setOnAction(e->addRow()); Button save=new Button("Save Selected"); save.setOnAction(e->saveSelected()); Button saveAll=new Button("Save All"); saveAll.setOnAction(e->saveAll()); Button recalc=new Button("Recalculate Totals"); recalc.setOnAction(e->recalcAll()); HBox toolbar=new HBox(8,add,save,saveAll,recalc,status); toolbar.setPadding(new Insets(8)); validationArea.setEditable(false); validationArea.setPrefRowCount(5); VBox bottom=new VBox(4,new Label("Validation"),validationArea); bottom.setPadding(new Insets(8)); root.setTop(toolbar); root.setCenter(table); root.setBottom(bottom); }
+    private TableColumn<SupplyItemViewModel,String> text(String title,String prop,int width){ TableColumn<SupplyItemViewModel,String> c=new TableColumn<>(title); c.setCellValueFactory(v->switch(prop){case "desc"->v.getValue().descriptionProperty(); case "used"->v.getValue().usedForProperty(); case "location"->v.getValue().locationProperty(); case "guardian"->v.getValue().guardianNameProperty(); default->v.getValue().notesProperty();}); c.setCellFactory(v->EditingCells.textCell()); c.setOnEditCommit(e->{ switch(prop){case "desc"->e.getRowValue().setDescription(e.getNewValue()); case "used"->e.getRowValue().setUsedFor(e.getNewValue()); case "location"->e.getRowValue().setLocation(e.getNewValue()); case "guardian"->e.getRowValue().setGuardianName(e.getNewValue()); default->e.getRowValue().setNotes(e.getNewValue());} after(e.getRowValue());}); c.setPrefWidth(width); return c; }
+    private TableColumn<SupplyItemViewModel,BigDecimal> money(String title,String prop,int width,boolean edit){ TableColumn<SupplyItemViewModel,BigDecimal> c=new TableColumn<>(title); c.setCellValueFactory(v->switch(prop){case "qty"->v.getValue().quantityProperty(); case "unit"->v.getValue().unitCostProperty(); default->v.getValue().totalValueProperty();}); c.setCellFactory(v->EditingCells.moneyCell()); c.setEditable(edit); if(edit)c.setOnEditCommit(e->{ if(prop.equals("qty")) e.getRowValue().setQuantity(e.getNewValue()); else e.getRowValue().setUnitCost(e.getNewValue()); after(e.getRowValue());}); c.setPrefWidth(width); return c; }
+    private TableColumn<SupplyItemViewModel,ValidationState> stateCol(){ TableColumn<SupplyItemViewModel,ValidationState> c=new TableColumn<>("State"); c.setCellValueFactory(v->v.getValue().validationStateProperty()); c.setEditable(false); c.setPrefWidth(90); return c; }
+    private void after(SupplyItemViewModel r){ service.recalculate(r); service.validate(r); table.refresh(); show(r); }
+    private void load(){ rows.setAll(service.load()); if(rows.isEmpty()) addRow(); }
+    private void addRow(){ SupplyItemViewModel r=new SupplyItemViewModel(); rows.add(r); table.getSelectionModel().clearAndSelect(rows.size()-1, table.getColumns().get(1)); }
+    private void saveSelected(){ var r=table.getSelectionModel().getSelectedItem(); if(r==null)return; service.save(r); table.refresh(); show(r); status.setText("Supply saved."); }
+    private void saveAll(){ service.saveAll(rows); table.refresh(); status.setText("Saved " + rows.size() + " supply item(s)."); }
+    private void recalcAll(){ rows.forEach(r->{service.recalculate(r); service.validate(r);}); table.refresh(); status.setText("Supply totals recalculated."); }
+    private void show(SupplyItemViewModel r){ validationArea.setText(r==null?"":(r.getValidationMessages().isEmpty()?"No validation issues.":String.join("\n",r.getValidationMessages()))); }
+}
