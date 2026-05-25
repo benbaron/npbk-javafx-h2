@@ -1,60 +1,43 @@
 package org.example.npbk.ui;
 
 import org.example.npbk.db.Database;
+import org.example.npbk.ui.template.WorkbookJsonFormRenderer;
 
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 /** Read-only workbook-style financial report panel. */
 public class WorkbookReportPanel implements AppPanel {
     private final String title;
+    private final String workbookSheetName;
     private final String viewName;
     private final BorderPane root = new BorderPane();
+    private final VBox templateHost = new VBox();
     private final QueryTablePanel backingTable;
 
     public WorkbookReportPanel(Database database, String workbookSheetName, String title, String viewName) {
         this.title = title;
+        this.workbookSheetName = workbookSheetName;
         this.viewName = viewName;
         this.backingTable = new QueryTablePanel(database, title + " Data", viewName);
-        build(workbookSheetName);
+        build();
     }
 
-    private void build(String workbookSheetName) {
+    private void build() {
         Label heading = new Label(title);
         heading.getStyleClass().add("report-title");
-        Label sheet = new Label("Workbook sheet model: " + workbookSheetName + " — read-only; export targets: text, .xlsx, PDF.");
+        Label sheet = new Label("Workbook sheet model: " + workbookSheetName + " — read-only; embedded JSON template plus H2 backing view.");
         sheet.getStyleClass().add("muted");
 
-        GridPane preview = new GridPane();
-        preview.getStyleClass().add("excel-report-grid");
-        preview.setHgap(0);
-        preview.setVgap(0);
-        addCell(preview, 0, 0, "Section", "report-header-cell");
-        addCell(preview, 1, 0, "Code", "report-header-cell");
-        addCell(preview, 2, 0, "Account", "report-header-cell");
-        addCell(preview, 3, 0, title.contains("Income") ? "Activity" : "Ending Balance", "report-header-cell");
-        addCell(preview, 0, 1, "Derived from", "report-label-cell");
-        addCell(preview, 1, 1, viewName, "report-value-cell");
-        addCell(preview, 2, 1, "Database-backed view", "report-value-cell", "wide-cell");
-        addCell(preview, 3, 1, "Read only", "report-value-cell");
-
-        VBox top = new VBox(8, heading, sheet, preview);
+        templateHost.setSpacing(8);
+        templateHost.setPadding(new Insets(12));
+        VBox top = new VBox(8, heading, sheet, templateHost);
         top.setPadding(new Insets(12));
         root.setTop(top);
         root.setCenter(backingTable.root());
-    }
-
-    private void addCell(GridPane grid, int col, int row, String text, String... styleClasses) {
-        Label label = new Label(text == null ? "" : text);
-        label.getStyleClass().add("excel-cell");
-        label.getStyleClass().addAll(styleClasses);
-        label.setMinWidth(col == 2 ? 320 : 140);
-        label.setMinHeight(28);
-        grid.add(label, col, row);
     }
 
     @Override
@@ -69,6 +52,23 @@ public class WorkbookReportPanel implements AppPanel {
 
     @Override
     public void onRefresh() {
+        renderEmbeddedTemplate();
         backingTable.onRefresh();
+    }
+
+    private void renderEmbeddedTemplate() {
+        templateHost.getChildren().clear();
+        try {
+            templateHost.getChildren().add(new WorkbookJsonFormRenderer().render(workbookSheetName));
+        } catch (RuntimeException ex) {
+            Label warning = new Label("Embedded JSON template for " + workbookSheetName + " is not available yet. "
+                    + "Run the local workbook-template extraction step and commit the generated JSON resource bundle.\n\n"
+                    + "Backing data view: " + viewName + "\n"
+                    + "Reason: " + ex.getMessage());
+            warning.getStyleClass().addAll("excel-cell", "report-note-cell");
+            warning.setWrapText(true);
+            warning.setMinWidth(800);
+            templateHost.getChildren().add(warning);
+        }
     }
 }
