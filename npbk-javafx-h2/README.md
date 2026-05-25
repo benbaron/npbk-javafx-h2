@@ -40,7 +40,7 @@ The project intentionally does **not** store generic spreadsheet cells. It store
 5. Debug/run the plain launcher class:
 
 ```text
-org.example.npbk.app.Launcher
+org.example.npbk.app.EclipseLauncher
 ```
 
 Do not run `NonprofitBookkeepingApp` directly from Eclipse unless your JavaFX module path is configured manually.
@@ -134,7 +134,7 @@ This is still a first pass. It is meant to establish the application structure, 
 - Banking import/matching is represented by editable statement rows, not an importer yet.
 - Period close does not yet lock transactions or generate closing entries.
 - Supplemental detail remaining amount is currently a placeholder equal to amount.
-- The project was packaged in an environment without Maven installed, so it was not compile-tested here. Import it in Eclipse and let Maven resolve JavaFX/H2 dependencies.
+- The project is compile-tested with Maven. Import it in Eclipse and let Maven resolve JavaFX/H2 dependencies.
 
 ## Suggested next development steps
 
