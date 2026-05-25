@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import org.example.npbk.db.Database;
+import org.example.npbk.ui.report.BalanceStatementPanel;
+import org.example.npbk.ui.report.IncomeStatementPanel;
 
 import javafx.scene.layout.BorderPane;
 
@@ -29,8 +31,8 @@ public class PanelHost extends BorderPane {
         factories.put(AppPanelId.TRANSACTIONS_LIST, () -> new QueryTablePanel(database, "Transactions List", "transactions_list_view"));
         factories.put(AppPanelId.ALL_CHECKS_TFRS, () -> new QueryTablePanel(database, "All Checks & Transfers", "all_checks_tfrs_view"));
         factories.put(AppPanelId.FUND_TRANSFERS, () -> new QueryTablePanel(database, "Fund Transfers", "fund_transfers_view"));
-        factories.put(AppPanelId.BALANCE_STMT, () -> new WorkbookReportPanel(database, "BalanceStmt", "Balance Statement", "balance_stmt_view"));
-        factories.put(AppPanelId.INCOME_STMT, () -> new WorkbookReportPanel(database, "IncomeStmt", "Income Statement", "income_stmt_view"));
+        factories.put(AppPanelId.BALANCE_STMT, () -> new BalanceStatementPanel(database));
+        factories.put(AppPanelId.INCOME_STMT, () -> new IncomeStatementPanel(database));
         factories.put(AppPanelId.CHART_OF_ACCOUNTS, () -> new ReferenceTablePanel(database, "Chart of Accounts", "accounts"));
         factories.put(AppPanelId.FUNDS, () -> new ReferenceTablePanel(database, "Funds", "funds"));
         factories.put(AppPanelId.BUDGET_CATEGORIES, () -> new ReferenceTablePanel(database, "Budget Categories", "budget_categories"));
