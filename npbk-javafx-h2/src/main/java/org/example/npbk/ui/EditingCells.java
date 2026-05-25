@@ -15,7 +15,14 @@ public final class EditingCells {
     public static <S> TableCell<S, String> textCell() {
         return new TableCell<>() {
             private final TextField textField = new TextField();
-            { textField.setOnAction(e -> commitEdit(textField.getText())); }
+            {
+                textField.setOnAction(e -> commitEdit(textField.getText()));
+                textField.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+                    if (!isFocused && isEditing()) {
+                        commitEdit(textField.getText());
+                    }
+                });
+            }
             @Override public void startEdit() {
                 super.startEdit(); textField.setText(getItem()); setText(null); setGraphic(textField); textField.requestFocus(); textField.selectAll();
             }
@@ -32,7 +39,14 @@ public final class EditingCells {
     public static <S> TableCell<S, BigDecimal> moneyCell() {
         return new TableCell<>() {
             private final TextField textField = new TextField();
-            { textField.setOnAction(e -> commitFromText()); }
+            {
+                textField.setOnAction(e -> commitFromText());
+                textField.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+                    if (!isFocused && isEditing()) {
+                        commitFromText();
+                    }
+                });
+            }
             @Override public void startEdit() { super.startEdit(); textField.setText(formatPlain(getItem())); setText(null); setGraphic(textField); textField.requestFocus(); textField.selectAll(); }
             @Override public void cancelEdit() { super.cancelEdit(); setGraphic(null); setText(formatMoney(getItem())); }
             @Override protected void updateItem(BigDecimal item, boolean empty) {
@@ -55,7 +69,14 @@ public final class EditingCells {
             { picker.setConverter(new StringConverter<>() {
                 @Override public String toString(LocalDate object) { return object == null ? "" : fmt.format(object); }
                 @Override public LocalDate fromString(String string) { return string == null || string.isBlank() ? null : LocalDate.parse(string, fmt); }
-            }); picker.setOnAction(e -> commitEdit(picker.getValue())); }
+            });
+                picker.setOnAction(e -> commitEdit(picker.getValue()));
+                picker.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+                    if (!isFocused && isEditing()) {
+                        commitEdit(picker.getValue());
+                    }
+                });
+            }
             @Override public void startEdit() { super.startEdit(); picker.setValue(getItem()); setText(null); setGraphic(picker); picker.requestFocus(); }
             @Override public void cancelEdit() { super.cancelEdit(); setGraphic(null); setText(getItem() == null ? "" : fmt.format(getItem())); }
             @Override protected void updateItem(LocalDate item, boolean empty) {
@@ -71,7 +92,14 @@ public final class EditingCells {
     public static <S> TableCell<S, Long> longCell() {
         return new TableCell<>() {
             private final TextField textField = new TextField();
-            { textField.setOnAction(e -> commitFromText()); }
+            {
+                textField.setOnAction(e -> commitFromText());
+                textField.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+                    if (!isFocused && isEditing()) {
+                        commitFromText();
+                    }
+                });
+            }
             @Override public void startEdit() { super.startEdit(); textField.setText(getItem() == null ? "" : getItem().toString()); setText(null); setGraphic(textField); textField.requestFocus(); textField.selectAll(); }
             @Override public void cancelEdit() { super.cancelEdit(); setGraphic(null); setText(getItem() == null ? "" : getItem().toString()); }
             @Override protected void updateItem(Long item, boolean empty) {
