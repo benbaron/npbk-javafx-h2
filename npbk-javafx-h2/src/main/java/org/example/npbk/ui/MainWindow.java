@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
@@ -16,6 +17,9 @@ import javafx.scene.layout.VBox;
 
 /** Top-level shell modeled after the sca-jakarta-h2 panel workspace. */
 public class MainWindow extends BorderPane {
+    private static final double WORKSPACE_MIN_WIDTH = 1100;
+    private static final double WORKSPACE_MIN_HEIGHT = 720;
+
     private final PanelHost panelHost;
     private final NavigationPane navigationPane;
     private final InspectorPane inspectorPane = new InspectorPane();
@@ -26,12 +30,26 @@ public class MainWindow extends BorderPane {
         this.navigationPane = new NavigationPane(this::openPanel);
 
         setTop(buildTopChrome());
-        SplitPane split = new SplitPane(navigationPane, panelHost, inspectorPane);
+        SplitPane split = new SplitPane(navigationPane, buildCenterScrollPane(), inspectorPane);
         split.setDividerPositions(0.22, 0.80);
         BorderPane.setMargin(split, new Insets(8));
         setCenter(split);
 
         openPanel(AppPanelId.DASHBOARD);
+    }
+
+    private ScrollPane buildCenterScrollPane() {
+        panelHost.setMinSize(WORKSPACE_MIN_WIDTH, WORKSPACE_MIN_HEIGHT);
+        panelHost.setPrefSize(WORKSPACE_MIN_WIDTH, WORKSPACE_MIN_HEIGHT);
+
+        ScrollPane scrollPane = new ScrollPane(panelHost);
+        scrollPane.getStyleClass().add("workspace-scroll-pane");
+        scrollPane.setPannable(true);
+        scrollPane.setFitToWidth(false);
+        scrollPane.setFitToHeight(false);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        return scrollPane;
     }
 
     private VBox buildTopChrome() {
