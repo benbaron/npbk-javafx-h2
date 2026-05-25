@@ -36,16 +36,17 @@ public class WorkbookPagePanel implements AppPanel {
         addCell(grid, 2, 0, "Implementation note", "report-header-cell");
         addCell(grid, 0, 1, workbookSheetName, "report-label-cell");
         addCell(grid, 1, 1, editable ? "stored records" : "derived support view", "report-value-cell");
-        addCell(grid, 2, 1, "First pass approximates Excel borders/positioning; later slices will map more cell regions.", "report-value-cell wide-cell");
+        addCell(grid, 2, 1, "First pass approximates Excel borders/positioning; later slices will map more cell regions.", "report-value-cell", "wide-cell");
 
         VBox box = new VBox(10, heading, note, grid);
         box.setPadding(new Insets(16));
         root.setCenter(box);
     }
 
-    private void addCell(GridPane grid, int col, int row, String text, String styleClass) {
+    private void addCell(GridPane grid, int col, int row, String text, String... styleClasses) {
         Label label = new Label(text == null ? "" : text);
-        label.getStyleClass().addAll("excel-cell", styleClass.split(" "));
+        label.getStyleClass().add("excel-cell");
+        label.getStyleClass().addAll(styleClasses);
         label.setWrapText(true);
         label.setMinWidth(col == 2 ? 420 : 180);
         label.setMinHeight(32);
