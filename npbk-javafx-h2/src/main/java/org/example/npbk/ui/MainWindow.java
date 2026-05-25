@@ -11,7 +11,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
@@ -103,7 +102,7 @@ public class MainWindow extends BorderPane {
     private Region spacer() {
         Region spacer = new Region();
         spacer.setMinWidth(20);
-        ToolBar.setMargin(spacer, new Insets(0, 8, 0, 8));
+        spacer.setPrefWidth(20);
         return spacer;
     }
 
