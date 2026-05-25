@@ -1,7 +1,7 @@
 package org.example.npbk.app;
 
 import org.example.npbk.db.Database;
-import org.example.npbk.ui.MainView;
+import org.example.npbk.ui.MainWindow;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -13,11 +13,11 @@ public class NonprofitBookkeepingApp extends Application {
         Database database = new Database();
         database.initialize();
 
-        MainView mainView = new MainView(database);
-        Scene scene = new Scene(mainView.getRoot(), 1250, 760);
+        MainWindow mainWindow = new MainWindow(database);
+        Scene scene = new Scene(mainWindow, 1350, 820);
         scene.getStylesheets().add(getClass().getResource("/org/example/npbk/app/app.css").toExternalForm());
 
-        stage.setTitle("NonprofitBookkeeping - Spreadsheet-Style Prototype");
+        stage.setTitle("NonprofitBookkeeping - Workbook-Modeled Accounting Prototype");
         stage.setScene(scene);
         stage.show();
     }
