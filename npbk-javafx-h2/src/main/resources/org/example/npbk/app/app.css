@@ -15,6 +15,14 @@
     -fx-font-weight: bold;
     -fx-padding: 0 0 8 0;
 }
+.workspace-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-fit-to-width: false;
+    -fx-fit-to-height: false;
+}
+.workspace-scroll-pane > .viewport {
+    -fx-background-color: #ffffff;
+}
 .h1, .report-title {
     -fx-font-size: 18px;
     -fx-font-weight: bold;
