@@ -15,12 +15,18 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 /** Renders compact semantic report templates with H2-backed values. */
 public class SemanticReportRenderer {
     private static final NumberFormat MONEY = NumberFormat.getCurrencyInstance(Locale.US);
+    private static final double MIN_COLUMN_WIDTH_CHARS = 10;
+    private static final double APPROX_CHAR_WIDTH_PX = 8;
+    private static final double CELL_PADDING_PX = 24;
+    private static final double MIN_READABLE_COLUMN_WIDTH = MIN_COLUMN_WIDTH_CHARS * APPROX_CHAR_WIDTH_PX + CELL_PADDING_PX;
 
     public Node render(JsonNode template, ReportValueSet values) {
         VBox root = new VBox(10);
@@ -45,6 +51,7 @@ public class SemanticReportRenderer {
     private Node renderSections(JsonNode template, ReportValueSet values) {
         GridPane grid = new GridPane();
         grid.getStyleClass().add("excel-report-grid");
+        setColumnWidths(grid, 80, 420, 140, 280);
         int row = 0;
         addHeader(grid, row++, "Line", "Description", "Amount", "Notes");
         for (JsonNode section : template.path("sections")) {
@@ -67,6 +74,7 @@ public class SemanticReportRenderer {
         GridPane grid = new GridPane();
         grid.getStyleClass().add("excel-report-grid");
         JsonNode columns = template.path("columns");
+        setTableColumnWidths(grid, columns);
         int row = 0;
         for (int c = 0; c < columns.size(); c++) {
             addCell(grid, c, row, columns.get(c).path("label").asText(), "report-header-cell");
@@ -87,6 +95,33 @@ public class SemanticReportRenderer {
         return grid;
     }
 
+    private void setColumnWidths(GridPane grid, double... widths) {
+        grid.getColumnConstraints().clear();
+        for (double width : widths) {
+            ColumnConstraints cc = new ColumnConstraints();
+            double adjusted = Math.max(MIN_READABLE_COLUMN_WIDTH, width);
+            cc.setMinWidth(adjusted);
+            cc.setPrefWidth(adjusted);
+            cc.setHgrow(Priority.NEVER);
+            grid.getColumnConstraints().add(cc);
+        }
+    }
+
+    private void setTableColumnWidths(GridPane grid, JsonNode columns) {
+        grid.getColumnConstraints().clear();
+        for (JsonNode column : columns) {
+            String label = column.path("label").asText("");
+            String field = column.path("field").asText("");
+            int chars = Math.max(label.length(), field.length());
+            double width = Math.max(MIN_READABLE_COLUMN_WIDTH, Math.min(320, chars * APPROX_CHAR_WIDTH_PX + CELL_PADDING_PX));
+            ColumnConstraints cc = new ColumnConstraints();
+            cc.setMinWidth(width);
+            cc.setPrefWidth(width);
+            cc.setHgrow(Priority.NEVER);
+            grid.getColumnConstraints().add(cc);
+        }
+    }
+
     private void addHeader(GridPane grid, int row, String... labels) {
         for (int c = 0; c < labels.length; c++) addCell(grid, c, row, labels[c], "report-header-cell");
     }
@@ -104,19 +139,29 @@ public class SemanticReportRenderer {
 
     private void addMerged(GridPane grid, int row, String text, String styleClass) {
         Label label = label(text, styleClass);
-        label.setMinWidth(760);
-        grid.add(label, 0, row, 4, 1);
+        label.setMinWidth(totalGridWidth(grid));
+        grid.add(label, 0, row, Math.max(1, grid.getColumnConstraints().size()), 1);
+    }
+
+    private double totalGridWidth(GridPane grid) {
+        double total = 0;
+        for (ColumnConstraints cc : grid.getColumnConstraints()) {
+            total += Math.max(MIN_READABLE_COLUMN_WIDTH, cc.getPrefWidth());
+        }
+        return total;
     }
 
     private void addCell(GridPane grid, int col, int row, String text, String... styleClasses) {
         Label label = label(text, styleClasses);
-        label.setMinWidth(switch (col) {
-            case 0 -> 80;
-            case 1 -> 420;
-            case 2 -> 140;
-            default -> 280;
-        });
+        label.setMinWidth(columnWidth(grid, col));
         grid.add(label, col, row);
+    }
+
+    private double columnWidth(GridPane grid, int col) {
+        if (col >= 0 && col < grid.getColumnConstraints().size()) {
+            return Math.max(MIN_READABLE_COLUMN_WIDTH, grid.getColumnConstraints().get(col).getPrefWidth());
+        }
+        return MIN_READABLE_COLUMN_WIDTH;
     }
 
     private Label label(String text, String... styleClasses) {
