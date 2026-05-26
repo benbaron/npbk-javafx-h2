@@ -69,12 +69,28 @@
     -fx-font-weight: bold;
     -fx-alignment: center;
 }
+.report-section-cell {
+    -fx-background-color: #cfe2f3;
+    -fx-font-weight: bold;
+}
 .report-label-cell {
     -fx-background-color: #f4f7fb;
     -fx-font-weight: bold;
 }
 .report-value-cell {
     -fx-background-color: #ffffff;
+}
+.report-total-cell {
+    -fx-background-color: #eef3f8;
+    -fx-font-weight: bold;
+    -fx-border-width: 1 0.5 1 0.5;
+}
+.report-currency-cell {
+    -fx-alignment: center-right;
+}
+.report-note-cell {
+    -fx-background-color: #fffdf2;
+    -fx-text-fill: #5f6b7a;
 }
 .wide-cell {
     -fx-wrap-text: true;
