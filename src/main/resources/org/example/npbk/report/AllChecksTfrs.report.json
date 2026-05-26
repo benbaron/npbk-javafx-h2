@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "npbk-semantic-report-1",
+  "templateId": "AllChecksTfrs",
+  "sourceSheet": "AllChecksTfrs",
+  "title": "All Checks & Transfers",
+  "subtitle": "Workbook-modeled list of check and transfer activity.",
+  "type": "tableReport",
+  "tableKey": "allChecksTfrs.rows",
+  "columns": [
+    { "label": "Date", "field": "TRANSACTION_DATE", "format": "date" },
+    { "label": "Reference", "field": "REFERENCE_NUMBER" },
+    { "label": "Bank Account", "field": "BANK_ACCOUNT_NAME" },
+    { "label": "Legal Name", "field": "LEGAL_NAME" },
+    { "label": "Fund", "field": "FUND_NAME" },
+    { "label": "Budget Category", "field": "BUDGET_CATEGORY_NAME" },
+    { "label": "Debit", "field": "DEBIT_AMOUNT", "format": "currency" },
+    { "label": "Credit", "field": "CREDIT_AMOUNT", "format": "currency" },
+    { "label": "Details", "field": "DESCRIPTION" }
+  ]
+}
