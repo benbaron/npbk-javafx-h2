@@ -2,7 +2,7 @@ package org.example.npbk.report;
 
 import java.time.LocalDate;
 
-/** Runtime context used when calculating report values from H2. */
+/** Runtime parameters used when generating a report pane. */
 public record ReportContext(
         LocalDate periodStart,
         LocalDate periodEnd,

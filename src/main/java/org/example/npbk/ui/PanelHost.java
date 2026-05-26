@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import org.example.npbk.db.Database;
+import org.example.npbk.ui.report.SemanticReportPanel;
 
 import javafx.scene.layout.BorderPane;
 
@@ -22,15 +23,15 @@ public class PanelHost extends BorderPane {
 
     private void registerFactories() {
         factories.put(AppPanelId.DASHBOARD, () -> new SimpleInfoPanel("Dashboard", "Workbook-modeled accounting workspace", "Use the navigation tree to open workbook pages, reports, reference tables, banking, and period close workflows."));
-        factories.put(AppPanelId.WORKBOOK_SUMMARY, () -> new WorkbookPagePanel(database, AppPanelId.WORKBOOK_SUMMARY, "WorkbookSummary", false));
+        factories.put(AppPanelId.WORKBOOK_SUMMARY, () -> new SemanticReportPanel(database, "WorkbookSummary", "Workbook Summary"));
         factories.put(AppPanelId.WORKBOOK_TABLES, () -> new WorkbookPagePanel(database, AppPanelId.WORKBOOK_TABLES, "WorkbookTables", false));
         factories.put(AppPanelId.SUPPLIES, () -> new SuppliesWorkbookPanel(database));
         factories.put(AppPanelId.TRANSACTION_EDITOR, () -> new SimpleInfoPanel("Transaction Editor", "Real accounting-record editor", "Next slice: enter a transaction header and balanced transaction lines while preserving the spreadsheet-like Ledger data-entry flow."));
-        factories.put(AppPanelId.TRANSACTIONS_LIST, () -> new QueryTablePanel(database, "Transactions List", "transactions_list_view"));
-        factories.put(AppPanelId.ALL_CHECKS_TFRS, () -> new QueryTablePanel(database, "All Checks & Transfers", "all_checks_tfrs_view"));
-        factories.put(AppPanelId.FUND_TRANSFERS, () -> new QueryTablePanel(database, "Fund Transfers", "fund_transfers_view"));
-        factories.put(AppPanelId.BALANCE_STMT, () -> new WorkbookReportPanel(database, "BalanceStmt", "Balance Statement", "balance_stmt_view"));
-        factories.put(AppPanelId.INCOME_STMT, () -> new WorkbookReportPanel(database, "IncomeStmt", "Income Statement", "income_stmt_view"));
+        factories.put(AppPanelId.TRANSACTIONS_LIST, () -> new SemanticReportPanel(database, "TransactionsList", "Transactions List"));
+        factories.put(AppPanelId.ALL_CHECKS_TFRS, () -> new SemanticReportPanel(database, "AllChecksTfrs", "All Checks & Transfers"));
+        factories.put(AppPanelId.FUND_TRANSFERS, () -> new SemanticReportPanel(database, "FundTransfers", "Fund Transfers"));
+        factories.put(AppPanelId.BALANCE_STMT, () -> new SemanticReportPanel(database, "BalanceStmt", "Balance Statement"));
+        factories.put(AppPanelId.INCOME_STMT, () -> new SemanticReportPanel(database, "IncomeStmt", "Income Statement"));
         factories.put(AppPanelId.CHART_OF_ACCOUNTS, () -> new ReferenceTablePanel(database, "Chart of Accounts", "accounts"));
         factories.put(AppPanelId.FUNDS, () -> new ReferenceTablePanel(database, "Funds", "funds"));
         factories.put(AppPanelId.BUDGET_CATEGORIES, () -> new ReferenceTablePanel(database, "Budget Categories", "budget_categories"));
@@ -59,23 +60,17 @@ public class PanelHost extends BorderPane {
 
     public void refreshActive() {
         AppPanel panel = activeId == null ? null : panels.get(activeId);
-        if (panel != null) {
-            panel.onRefresh();
-        }
+        if (panel != null) panel.onRefresh();
     }
 
     public void saveActive() {
         AppPanel panel = activeId == null ? null : panels.get(activeId);
-        if (panel != null) {
-            panel.onSave();
-        }
+        if (panel != null) panel.onSave();
     }
 
     private AppPanel create(AppPanelId id) {
         Supplier<AppPanel> factory = factories.get(id);
-        if (factory == null) {
-            throw new IllegalArgumentException("Unsupported panel id: " + id);
-        }
+        if (factory == null) throw new IllegalArgumentException("Unsupported panel id: " + id);
         return factory.get();
     }
 }

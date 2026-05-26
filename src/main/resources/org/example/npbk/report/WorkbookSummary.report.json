@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "npbk-semantic-report-1",
+  "templateId": "WorkbookSummary",
+  "sourceSheet": "WorkbookSummary",
+  "title": "Workbook Summary",
+  "subtitle": "Workbook-modeled summary page. This is separate from the application dashboard and will be expanded as the workbook summary formulas are mapped to report services.",
+  "type": "sectionReport",
+  "sections": [
+    {
+      "title": "Summary Status",
+      "rows": [
+        { "line": "", "label": "Organization", "valueKey": "context.organizationName", "format": "text", "note": "From report context / company profile." },
+        { "line": "", "label": "Reporting Period Start", "valueKey": "context.periodStart", "format": "date" },
+        { "line": "", "label": "Reporting Period End", "valueKey": "context.periodEnd", "format": "date" },
+        { "line": "", "label": "Total Assets", "valueKey": "balanceStmt.totalAssets", "format": "currency" },
+        { "line": "", "label": "Total Liabilities", "valueKey": "balanceStmt.totalLiabilities", "format": "currency" },
+        { "line": "", "label": "Net Income / (Loss)", "valueKey": "incomeStmt.netIncomeLoss", "format": "currency" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "npbk-semantic-report-1",
+  "templateId": "IncomeStmt",
+  "sourceSheet": "IncomeStmt",
+  "title": "Income Statement",
+  "subtitle": "Statement of Activities modeled on the SCA exchequer workbook form.",
+  "type": "sectionReport",
+  "sections": [
+    {
+      "title": "Income",
+      "rows": [
+        { "line": "1a", "label": "Fundraising: Non-medieval activities to earn income (car washes, bake sales, etc.)", "valueKey": "incomeStmt.income.fundraisingNonMedieval", "format": "currency", "sourceCell": "IncomeStmt!H15" },
+        { "line": "2.0", "label": "Direct Contributions/Donations", "valueKey": "incomeStmt.income.directContributionsDonations", "format": "currency", "sourceCell": "IncomeStmt!H16" },
+        { "line": "3a", "label": "Activity Related: Medieval activities to earn income (events, demos, heraldry fees)", "valueKey": "incomeStmt.income.activityRelated", "format": "currency", "sourceCell": "IncomeStmt!H17" },
+        { "type": "totalRow", "label": "Total Income", "valueKey": "incomeStmt.totalIncome", "format": "currency" }
+      ]
+    },
+    {
+      "title": "Expenses",
+      "rows": [
+        { "line": "21b", "label": "21b Occupancy - Activity Rel", "valueKey": "incomeStmt.expenses.occupancyActivityRelated", "format": "currency", "sourceCell": "IncomeStmt!H36" },
+        { "type": "totalRow", "label": "Total Expenses", "valueKey": "incomeStmt.totalExpenses", "format": "currency" }
+      ]
+    },
+    {
+      "title": "Change in Net Assets",
+      "rows": [
+        { "type": "totalRow", "label": "Net Income / (Loss)", "valueKey": "incomeStmt.netIncomeLoss", "format": "currency" }
+      ]
+    }
+  ]
+}

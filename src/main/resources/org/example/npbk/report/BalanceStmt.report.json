@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "npbk-semantic-report-1",
+  "templateId": "BalanceStmt",
+  "sourceSheet": "BalanceStmt",
+  "title": "Balance Statement",
+  "subtitle": "Statement of Financial Position modeled on the SCA exchequer workbook form.",
+  "type": "sectionReport",
+  "sections": [
+    {
+      "title": "I. Assets",
+      "rows": [
+        { "line": "I.a", "label": "Undep. & non-interest cash", "valueKey": "balanceStmt.assets.undepositedAndNonInterestCash", "format": "currency", "sourceCell": "BalanceStmt!H15", "note": "Cash and non-interest bank balances." },
+        { "line": "I.b", "label": "Cash Earning Interest", "valueKey": "balanceStmt.assets.cashEarningInterest", "format": "currency", "sourceCell": "BalanceStmt!H16", "note": "Interest-bearing cash accounts." },
+        { "line": "I.c", "label": "Receivables", "valueKey": "balanceStmt.assets.receivables", "format": "currency", "sourceCell": "BalanceStmt!H17", "note": "Linked receivable detail schedules." },
+        { "line": "I.d", "label": "Inventory", "valueKey": "balanceStmt.assets.inventory", "format": "currency", "sourceCell": "BalanceStmt!H18", "note": "Inventory/goods held." },
+        { "line": "I.e", "label": "Regalia", "valueKey": "balanceStmt.assets.regalia", "format": "currency", "sourceCell": "BalanceStmt!H19", "note": "Regalia and ceremonial property." },
+        { "line": "I.f", "label": "Purchased Property & Equipment", "valueKey": "balanceStmt.assets.purchasedPropertyAndEquipment", "format": "currency", "sourceCell": "BalanceStmt!H20", "note": "Durable property and equipment." },
+        { "line": "I.g", "label": "Less Accum. Depreciation", "valueKey": "balanceStmt.assets.lessAccumulatedDepreciation", "format": "currency", "sourceCell": "BalanceStmt!H21", "note": "Contra-asset." },
+        { "line": "I.h", "label": "Prepaid Expenses", "valueKey": "balanceStmt.assets.prepaidExpenses", "format": "currency", "sourceCell": "BalanceStmt!H22", "note": "Linked prepaid detail schedules." },
+        { "line": "I.i", "label": "Other Assets", "valueKey": "balanceStmt.assets.otherAssets", "format": "currency", "sourceCell": "BalanceStmt!H23", "note": "Other asset detail schedules." },
+        { "type": "totalRow", "label": "Total Assets", "valueKey": "balanceStmt.totalAssets", "format": "currency", "sourceCell": "BalanceStmt!H24" }
+      ]
+    },
+    {
+      "title": "II. Liabilities",
+      "rows": [
+        { "line": "II.a", "label": "Newsletter Subs. Due", "valueKey": "balanceStmt.liabilities.newsletterSubscriptionsDue", "format": "currency", "sourceCell": "BalanceStmt!H29" },
+        { "line": "II.b", "label": "Deferred Revenue", "valueKey": "balanceStmt.liabilities.deferredRevenue", "format": "currency", "sourceCell": "BalanceStmt!H30" },
+        { "line": "II.c", "label": "Payables", "valueKey": "balanceStmt.liabilities.payables", "format": "currency", "sourceCell": "BalanceStmt!H31" },
+        { "line": "II.d", "label": "Other Liabilities", "valueKey": "balanceStmt.liabilities.otherLiabilities", "format": "currency", "sourceCell": "BalanceStmt!H32" },
+        { "type": "totalRow", "label": "Total Liabilities", "valueKey": "balanceStmt.totalLiabilities", "format": "currency", "sourceCell": "BalanceStmt!H33" }
+      ]
+    },
+    {
+      "title": "III. Net Assets",
+      "rows": [
+        { "line": "III", "label": "Net Assets", "valueKey": "balanceStmt.netAssets", "format": "currency", "sourceCell": "BalanceStmt!H36" },
+        { "type": "totalRow", "label": "Total Liabilities and Net Assets", "valueKey": "balanceStmt.totalLiabilitiesAndNetAssets", "format": "currency", "sourceCell": "BalanceStmt!H38" },
+        { "type": "totalRow", "label": "Balance Check", "valueKey": "balanceStmt.balanceCheck", "format": "currency", "sourceCell": "BalanceStmt!H40", "note": "Should be zero when balance statement is internally consistent." }
+      ]
+    }
+  ]
+}

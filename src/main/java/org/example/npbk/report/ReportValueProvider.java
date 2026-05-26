@@ -1,6 +1,6 @@
 package org.example.npbk.report;
 
-/** Calculates report values from the database and other application state. */
+/** Supplies dynamic H2-backed values for a semantic report template. */
 public interface ReportValueProvider {
     ReportValueSet loadValues(ReportContext context);
 }
