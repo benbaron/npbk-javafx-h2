@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "npbk-semantic-report-1",
+  "templateId": "TransactionsList",
+  "sourceSheet": "TransactionsList",
+  "title": "Transactions List",
+  "subtitle": "Workbook-modeled transaction listing generated from the normalized transaction tables.",
+  "type": "tableReport",
+  "tableKey": "transactionsList.rows",
+  "columns": [
+    { "label": "Date", "field": "TRANSACTION_DATE", "format": "date" },
+    { "label": "Reference", "field": "REFERENCE_NUMBER" },
+    { "label": "Legal Name", "field": "LEGAL_NAME" },
+    { "label": "Account", "field": "ACCOUNT_NAME" },
+    { "label": "Fund", "field": "FUND_NAME" },
+    { "label": "Budget Category", "field": "BUDGET_CATEGORY_NAME" },
+    { "label": "Debit", "field": "DEBIT_AMOUNT", "format": "currency" },
+    { "label": "Credit", "field": "CREDIT_AMOUNT", "format": "currency" },
+    { "label": "Details", "field": "DESCRIPTION" }
+  ]
+}
