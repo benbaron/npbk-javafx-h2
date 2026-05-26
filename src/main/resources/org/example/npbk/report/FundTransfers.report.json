@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "npbk-semantic-report-1",
+  "templateId": "FundTransfers",
+  "sourceSheet": "FundTransfers",
+  "title": "Fund Transfers",
+  "subtitle": "Workbook-modeled list of fund transfer effects by transaction and fund.",
+  "type": "tableReport",
+  "tableKey": "fundTransfers.rows",
+  "columns": [
+    { "label": "Date", "field": "TRANSACTION_DATE", "format": "date" },
+    { "label": "Reference", "field": "REFERENCE_NUMBER" },
+    { "label": "Fund", "field": "FUND_NAME" },
+    { "label": "Fund Effect", "field": "FUND_EFFECT", "format": "currency" }
+  ]
+}
