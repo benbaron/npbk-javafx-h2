@@ -25,6 +25,11 @@ import javafx.scene.layout.VBox;
 
 /** Read-only dynamic table panel for database views and tables. */
 public class QueryTablePanel implements AppPanel {
+    private static final double MIN_COLUMN_WIDTH_CHARS = 10;
+    private static final double APPROX_CHAR_WIDTH_PX = 8;
+    private static final double CELL_PADDING_PX = 24;
+    private static final double MIN_READABLE_COLUMN_WIDTH = MIN_COLUMN_WIDTH_CHARS * APPROX_CHAR_WIDTH_PX + CELL_PADDING_PX;
+
     protected final Database database;
     private final String title;
     private final String sourceName;
@@ -50,7 +55,7 @@ public class QueryTablePanel implements AppPanel {
         VBox header = new VBox(4, heading, source, actions);
         header.setPadding(new Insets(10));
         root.setTop(header);
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
         table.setPlaceholder(new Label("No rows yet."));
         root.setCenter(table);
     }
@@ -81,7 +86,8 @@ public class QueryTablePanel implements AppPanel {
                 String columnName = md.getColumnLabel(i);
                 TableColumn<Map<String, Object>, String> col = new TableColumn<>(columnName);
                 col.setCellValueFactory(data -> new SimpleStringProperty(format(data.getValue().get(columnName))));
-                col.setPrefWidth(Math.max(90, Math.min(220, columnName.length() * 12)));
+                col.setMinWidth(MIN_READABLE_COLUMN_WIDTH);
+                col.setPrefWidth(preferredColumnWidth(columnName));
                 table.getColumns().add(col);
             }
             while (rs.next()) {
@@ -97,6 +103,11 @@ public class QueryTablePanel implements AppPanel {
         } catch (SQLException ex) {
             status.setText("Could not load data: " + ex.getMessage());
         }
+    }
+
+    private double preferredColumnWidth(String columnName) {
+        int chars = columnName == null ? 0 : columnName.length();
+        return Math.max(MIN_READABLE_COLUMN_WIDTH, Math.min(260, chars * APPROX_CHAR_WIDTH_PX + CELL_PADDING_PX));
     }
 
     protected String safeIdentifier(String identifier) {
