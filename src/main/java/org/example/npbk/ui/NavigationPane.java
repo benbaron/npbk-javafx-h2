@@ -9,17 +9,21 @@ import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 /** Left navigation anchor modeled after the sca-jakarta-h2 workspace shell. */
-public class NavigationPane extends VBox {
+public class NavigationPane extends VBox
+{
     private final TreeView<NavItem> tree;
     private final Map<AppPanelId, TreeItem<NavItem>> index = new EnumMap<>(AppPanelId.class);
     private final Consumer<AppPanelId> openPanel;
 
-    public NavigationPane(Consumer<AppPanelId> openPanel) {
+    public NavigationPane(Consumer<AppPanelId> openPanel)
+    {
         this.openPanel = openPanel;
         getStyleClass().add("nav");
+        setMinSize(0, 0);
 
         Label title = new Label("Navigation Links");
         title.getStyleClass().add("nav-title");
@@ -59,51 +63,59 @@ public class NavigationPane extends VBox {
 
         tree = new TreeView<>(root);
         tree.setShowRoot(false);
+        tree.setMinSize(0, 0);
+        tree.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        VBox.setVgrow(tree, Priority.ALWAYS);
         tree.setCellFactory(tv -> new TreeCell<>() {
             @Override
-            protected void updateItem(NavItem item, boolean empty) {
+            protected void updateItem(NavItem item, boolean empty)
+            {
                 super.updateItem(item, empty);
                 setText(empty || item == null ? null : item.label());
             }
         });
         tree.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
-            if (newSel != null && newSel.getValue() != null && newSel.getValue().panelId() != null) {
+            if (newSel != null && newSel.getValue() != null && newSel.getValue().panelId() != null)
                 openPanel.accept(newSel.getValue().panelId());
-            }
         });
         tree.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.ENTER) {
+            if (e.getCode() == KeyCode.ENTER)
+            {
                 TreeItem<NavItem> selected = tree.getSelectionModel().getSelectedItem();
-                if (selected != null && selected.getValue() != null && selected.getValue().panelId() != null) {
+                if (selected != null && selected.getValue() != null && selected.getValue().panelId() != null)
                     openPanel.accept(selected.getValue().panelId());
-                }
             }
         });
 
         getChildren().addAll(title, tree);
     }
 
-    public void highlight(AppPanelId id) {
+    public void highlight(AppPanelId id)
+    {
         TreeItem<NavItem> item = index.get(id);
-        if (item != null) {
+        if (item != null)
+        {
             tree.getSelectionModel().select(item);
             tree.scrollTo(tree.getRow(item));
         }
     }
 
-    private TreeItem<NavItem> group(TreeItem<NavItem> parent, String label) {
-        TreeItem<NavItem> g = new TreeItem<>(new NavItem(null, label));
-        g.setExpanded(true);
-        parent.getChildren().add(g);
-        return g;
+    private TreeItem<NavItem> group(TreeItem<NavItem> parent, String label)
+    {
+        TreeItem<NavItem> group = new TreeItem<>(new NavItem(null, label));
+        group.setExpanded(true);
+        parent.getChildren().add(group);
+        return group;
     }
 
-    private void add(TreeItem<NavItem> parent, AppPanelId id, String label) {
+    private void add(TreeItem<NavItem> parent, AppPanelId id, String label)
+    {
         TreeItem<NavItem> item = new TreeItem<>(new NavItem(id, label));
         parent.getChildren().add(item);
         index.put(id, item);
     }
 
-    public record NavItem(AppPanelId panelId, String label) {
+    public record NavItem(AppPanelId panelId, String label)
+    {
     }
 }
