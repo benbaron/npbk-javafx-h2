@@ -36,10 +36,16 @@ public class NormalizedTransactionService
         return repository.findById(transactionId);
     }
 
-    public SaveResult save(TransactionEditorViewModel model)
+    public List<String> validate(TransactionEditorViewModel model)
     {
         List<String> messages = validator.validate(model);
         model.getValidationMessages().setAll(messages);
+        return messages;
+    }
+
+    public SaveResult save(TransactionEditorViewModel model)
+    {
+        List<String> messages = validate(model);
         if (!messages.isEmpty())
             return new SaveResult(false, model, messages);
         repository.save(model);
