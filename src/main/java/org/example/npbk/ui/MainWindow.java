@@ -2,19 +2,14 @@ package org.example.npbk.ui;
 
 import org.example.npbk.db.Database;
 
-import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Separator;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -26,6 +21,8 @@ public class MainWindow extends BorderPane
     private static final double WORKSPACE_PREF_HEIGHT = 720;
     private static final double NAVIGATION_WIDTH = 260;
     private static final double INSPECTOR_WIDTH = 280;
+    private static final double SEPARATOR_WIDTH = 1;
+    private static final double SHELL_PADDING = 8;
 
     private final PanelHost panelHost;
     private final NavigationPane navigationPane;
@@ -55,35 +52,25 @@ public class MainWindow extends BorderPane
         inspectorPane.setMaxWidth(INSPECTOR_WIDTH);
     }
 
-    private HBox buildWorkspaceShell()
+    private WorkspaceShell buildWorkspaceShell()
     {
         ScrollPane workspace = buildCenterScrollPane();
         StackPane workspaceFrame = new StackPane(workspace);
         workspaceFrame.getStyleClass().add("workspace-frame");
         workspaceFrame.setMinSize(0, 0);
         workspaceFrame.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        HBox.setHgrow(workspaceFrame, Priority.ALWAYS);
 
-        HBox shell = new HBox(
+        WorkspaceShell shell = new WorkspaceShell(
             navigationPane,
-            verticalSeparator(),
             workspaceFrame,
-            verticalSeparator(),
-            inspectorPane);
-        shell.getStyleClass().add("workspace-shell");
+            inspectorPane,
+            NAVIGATION_WIDTH,
+            INSPECTOR_WIDTH,
+            SEPARATOR_WIDTH,
+            SHELL_PADDING);
         shell.setMinSize(0, 0);
         shell.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        shell.setPadding(new Insets(8));
         return shell;
-    }
-
-    private Separator verticalSeparator()
-    {
-        Separator separator = new Separator(Orientation.VERTICAL);
-        separator.setMinWidth(1);
-        separator.setPrefWidth(1);
-        separator.setMaxWidth(1);
-        return separator;
     }
 
     private ScrollPane buildCenterScrollPane()
