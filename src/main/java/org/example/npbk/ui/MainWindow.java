@@ -3,16 +3,20 @@ package org.example.npbk.ui;
 import org.example.npbk.db.Database;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SplitPane;
+import javafx.scene.control.Separator;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 /** Top-level shell modeled after the sca-jakarta-h2 panel workspace. */
@@ -20,12 +24,8 @@ public class MainWindow extends BorderPane
 {
     private static final double WORKSPACE_PREF_WIDTH = 1100;
     private static final double WORKSPACE_PREF_HEIGHT = 720;
-    private static final double NAVIGATION_MIN_WIDTH = 220;
-    private static final double NAVIGATION_PREF_WIDTH = 260;
-    private static final double NAVIGATION_MAX_WIDTH = 360;
-    private static final double INSPECTOR_MIN_WIDTH = 220;
-    private static final double INSPECTOR_PREF_WIDTH = 280;
-    private static final double INSPECTOR_MAX_WIDTH = 360;
+    private static final double NAVIGATION_WIDTH = 260;
+    private static final double INSPECTOR_WIDTH = 280;
 
     private final PanelHost panelHost;
     private final NavigationPane navigationPane;
@@ -39,29 +39,51 @@ public class MainWindow extends BorderPane
 
         configureSidePanes();
         setTop(buildTopChrome());
-
-        ScrollPane workspace = buildCenterScrollPane();
-        SplitPane split = new SplitPane(navigationPane, workspace, inspectorPane);
-        split.setMinSize(0, 0);
-        SplitPane.setResizableWithParent(navigationPane, false);
-        SplitPane.setResizableWithParent(workspace, true);
-        SplitPane.setResizableWithParent(inspectorPane, false);
-        split.setDividerPositions(0.20, 0.80);
-        BorderPane.setMargin(split, new Insets(8));
-        setCenter(split);
+        setCenter(buildWorkspaceShell());
 
         openPanel(AppPanelId.DASHBOARD);
     }
 
     private void configureSidePanes()
     {
-        navigationPane.setMinWidth(NAVIGATION_MIN_WIDTH);
-        navigationPane.setPrefWidth(NAVIGATION_PREF_WIDTH);
-        navigationPane.setMaxWidth(NAVIGATION_MAX_WIDTH);
+        navigationPane.setMinWidth(NAVIGATION_WIDTH);
+        navigationPane.setPrefWidth(NAVIGATION_WIDTH);
+        navigationPane.setMaxWidth(NAVIGATION_WIDTH);
 
-        inspectorPane.setMinWidth(INSPECTOR_MIN_WIDTH);
-        inspectorPane.setPrefWidth(INSPECTOR_PREF_WIDTH);
-        inspectorPane.setMaxWidth(INSPECTOR_MAX_WIDTH);
+        inspectorPane.setMinWidth(INSPECTOR_WIDTH);
+        inspectorPane.setPrefWidth(INSPECTOR_WIDTH);
+        inspectorPane.setMaxWidth(INSPECTOR_WIDTH);
+    }
+
+    private HBox buildWorkspaceShell()
+    {
+        ScrollPane workspace = buildCenterScrollPane();
+        StackPane workspaceFrame = new StackPane(workspace);
+        workspaceFrame.getStyleClass().add("workspace-frame");
+        workspaceFrame.setMinSize(0, 0);
+        workspaceFrame.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        HBox.setHgrow(workspaceFrame, Priority.ALWAYS);
+
+        HBox shell = new HBox(
+            navigationPane,
+            verticalSeparator(),
+            workspaceFrame,
+            verticalSeparator(),
+            inspectorPane);
+        shell.getStyleClass().add("workspace-shell");
+        shell.setMinSize(0, 0);
+        shell.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        shell.setPadding(new Insets(8));
+        return shell;
+    }
+
+    private Separator verticalSeparator()
+    {
+        Separator separator = new Separator(Orientation.VERTICAL);
+        separator.setMinWidth(1);
+        separator.setPrefWidth(1);
+        separator.setMaxWidth(1);
+        return separator;
     }
 
     private ScrollPane buildCenterScrollPane()
@@ -73,8 +95,6 @@ public class MainWindow extends BorderPane
         scrollPane.getStyleClass().add("workspace-scroll-pane");
         scrollPane.setMinSize(0, 0);
         scrollPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        scrollPane.setPrefViewportWidth(700);
-        scrollPane.setPrefViewportHeight(WORKSPACE_PREF_HEIGHT);
         scrollPane.setPannable(true);
         scrollPane.setFitToWidth(false);
         scrollPane.setFitToHeight(false);
