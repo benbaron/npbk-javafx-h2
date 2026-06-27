@@ -167,4 +167,3 @@ org.example.npbk.app.Launcher
 ```
 
 Do not run `org.example.npbk.app.NonprofitBookkeepingApp` directly from Eclipse unless you have explicitly configured the JavaFX module path yourself.
-
