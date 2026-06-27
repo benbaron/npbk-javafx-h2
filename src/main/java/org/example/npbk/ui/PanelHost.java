@@ -26,7 +26,7 @@ public class PanelHost extends BorderPane {
         factories.put(AppPanelId.WORKBOOK_SUMMARY, () -> new SemanticReportPanel(database, "WorkbookSummary", "Workbook Summary"));
         factories.put(AppPanelId.WORKBOOK_TABLES, () -> new WorkbookPagePanel(database, AppPanelId.WORKBOOK_TABLES, "WorkbookTables", false));
         factories.put(AppPanelId.SUPPLIES, () -> new SuppliesWorkbookPanel(database));
-        factories.put(AppPanelId.TRANSACTION_EDITOR, () -> new SimpleInfoPanel("Transaction Editor", "Real accounting-record editor", "Next slice: enter a transaction header and balanced transaction lines while preserving the spreadsheet-like Ledger data-entry flow."));
+        factories.put(AppPanelId.TRANSACTION_EDITOR, () -> new TransactionEditorPanel(database));
         factories.put(AppPanelId.TRANSACTIONS_LIST, () -> new SemanticReportPanel(database, "TransactionsList", "Transactions List"));
         factories.put(AppPanelId.ALL_CHECKS_TFRS, () -> new SemanticReportPanel(database, "AllChecksTfrs", "All Checks & Transfers"));
         factories.put(AppPanelId.FUND_TRANSFERS, () -> new SemanticReportPanel(database, "FundTransfers", "Fund Transfers"));
