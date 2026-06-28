@@ -8,25 +8,34 @@
 .nav {
     -fx-padding: 8;
     -fx-background-color: #eef2f6;
-    -fx-min-width: 220px;
-    -fx-pref-width: 260px;
-    -fx-max-width: 360px;
 }
 .inspector {
-    -fx-min-width: 220px;
-    -fx-pref-width: 280px;
-    -fx-max-width: 360px;
+    -fx-background-color: #f7f8fa;
 }
 .nav-title {
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-padding: 0 0 8 0;
 }
+.workspace-outer-split,
+.workspace-inner-split {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+.workspace-outer-split > .split-pane-divider,
+.workspace-inner-split > .split-pane-divider {
+    -fx-background-color: #aab4c0;
+    -fx-padding: 0 3 0 3;
+}
+.workspace-outer-split > .split-pane-divider:hover,
+.workspace-inner-split > .split-pane-divider:hover {
+    -fx-background-color: #6f7f91;
+}
 .workspace-scroll-pane {
     -fx-background-color: transparent;
     -fx-min-width: 0;
     -fx-min-height: 0;
-    -fx-fit-to-width: false;
+    -fx-fit-to-width: true;
     -fx-fit-to-height: false;
 }
 .workspace-scroll-pane > .viewport {
