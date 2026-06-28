@@ -15,37 +15,49 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 
 /** AppPanel for compact semantic report JSON templates. */
-public class SemanticReportPanel implements AppPanel {
+public class SemanticReportPanel implements AppPanel
+{
     private final Database database;
     private final String templateId;
     private final String title;
     private final BorderPane root = new BorderPane();
 
-    public SemanticReportPanel(Database database, String templateId, String title) {
+    public SemanticReportPanel(Database database, String templateId, String title)
+    {
         this.database = database;
         this.templateId = templateId;
         this.title = title;
+        root.setMinSize(0, 0);
+        root.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
     }
 
     @Override
-    public String title() {
+    public String title()
+    {
         return title;
     }
 
     @Override
-    public Node root() {
+    public Node root()
+    {
         return root;
     }
 
     @Override
-    public void onRefresh() {
-        try {
+    public void onRefresh()
+    {
+        try
+        {
             ReportContext context = ReportContext.currentYearToDate();
             JsonNode template = SemanticReportTemplateLoader.load(templateId);
-            ReportValueSet values = new ReportValueProviderRegistry(database).providerFor(templateId).loadValues(context);
+            ReportValueSet values = new ReportValueProviderRegistry(database)
+                .providerFor(templateId)
+                .loadValues(context);
             Node rendered = new SemanticReportRenderer().render(template, values);
             root.setCenter(rendered);
-        } catch (RuntimeException ex) {
+        }
+        catch (RuntimeException ex)
+        {
             Label error = new Label("Could not render report " + templateId + ": " + ex.getMessage());
             error.setWrapText(true);
             error.setPadding(new Insets(16));
