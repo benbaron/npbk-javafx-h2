@@ -24,10 +24,6 @@ import javafx.scene.layout.VBox;
 public class SemanticReportRenderer
 {
     private static final NumberFormat MONEY = NumberFormat.getCurrencyInstance(Locale.US);
-    private static final double MIN_COLUMN_WIDTH = 56;
-    private static final double TABLE_MIN_COLUMN_WIDTH = 72;
-    private static final double APPROX_CHAR_WIDTH_PX = 7;
-    private static final double CELL_PADDING_PX = 20;
 
     public Node render(JsonNode template, ReportValueSet values)
     {
@@ -137,12 +133,11 @@ public class SemanticReportRenderer
         grid.getColumnConstraints().clear();
         for (double preferredWidth : preferredWidths)
         {
-            double minimumWidth = Math.max(
-                MIN_COLUMN_WIDTH,
-                Math.min(preferredWidth, preferredWidth * 0.45));
+            ReportColumnSizing.ColumnSize size =
+                ReportColumnSizing.sectionColumn(preferredWidth);
             ColumnConstraints constraints = new ColumnConstraints(
-                minimumWidth,
-                preferredWidth,
+                size.minimumWidth(),
+                size.preferredWidth(),
                 Double.MAX_VALUE);
             constraints.setHgrow(Priority.SOMETIMES);
             constraints.setFillWidth(true);
@@ -155,18 +150,12 @@ public class SemanticReportRenderer
         grid.getColumnConstraints().clear();
         for (JsonNode column : columns)
         {
-            String label = column.path("label").asText("");
-            String field = column.path("field").asText("");
-            int chars = Math.max(label.length(), field.length());
-            double preferredWidth = Math.max(
-                96,
-                Math.min(220, chars * APPROX_CHAR_WIDTH_PX + CELL_PADDING_PX));
-            double minimumWidth = Math.max(
-                TABLE_MIN_COLUMN_WIDTH,
-                Math.min(preferredWidth, preferredWidth * 0.65));
+            ReportColumnSizing.ColumnSize size = ReportColumnSizing.tableColumn(
+                column.path("label").asText(""),
+                column.path("field").asText(""));
             ColumnConstraints constraints = new ColumnConstraints(
-                minimumWidth,
-                preferredWidth,
+                size.minimumWidth(),
+                size.preferredWidth(),
                 Double.MAX_VALUE);
             constraints.setHgrow(Priority.SOMETIMES);
             constraints.setFillWidth(true);
