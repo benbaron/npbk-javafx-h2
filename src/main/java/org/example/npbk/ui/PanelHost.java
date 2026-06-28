@@ -7,21 +7,27 @@ import java.util.function.Supplier;
 import org.example.npbk.db.Database;
 import org.example.npbk.ui.report.SemanticReportPanel;
 
+import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 
 /** Lazily creates and hosts the center workspace panel. */
-public class PanelHost extends BorderPane {
+public class PanelHost extends BorderPane
+{
     private final Database database;
     private final Map<AppPanelId, Supplier<AppPanel>> factories = new EnumMap<>(AppPanelId.class);
     private final Map<AppPanelId, AppPanel> panels = new EnumMap<>(AppPanelId.class);
     private AppPanelId activeId;
 
-    public PanelHost(Database database) {
+    public PanelHost(Database database)
+    {
         this.database = database;
+        setMinSize(0, 0);
+        setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         registerFactories();
     }
 
-    private void registerFactories() {
+    private void registerFactories()
+    {
         factories.put(AppPanelId.DASHBOARD, () -> new SimpleInfoPanel("Dashboard", "Workbook-modeled accounting workspace", "Use the navigation tree to open workbook pages, reports, reference tables, banking, and period close workflows."));
         factories.put(AppPanelId.WORKBOOK_SUMMARY, () -> new SemanticReportPanel(database, "WorkbookSummary", "Workbook Summary"));
         factories.put(AppPanelId.WORKBOOK_TABLES, () -> new WorkbookPagePanel(database, AppPanelId.WORKBOOK_TABLES, "WorkbookTables", false));
@@ -42,35 +48,46 @@ public class PanelHost extends BorderPane {
         factories.put(AppPanelId.HELP, () -> new SimpleInfoPanel("Help", "Workbook-to-application model", "The spreadsheet is the familiar data-entry and report reference. The database stores real accounting records and the panes render workbook-like views."));
     }
 
-    public void show(AppPanelId id) {
+    public void show(AppPanelId id)
+    {
         AppPanel panel = panels.computeIfAbsent(id, this::create);
         activeId = id;
-        setCenter(panel.root());
+        Node panelRoot = panel.root();
+        PanelGeometry.makeResponsive(panelRoot);
+        setCenter(panelRoot);
         panel.onRefresh();
     }
 
-    public AppPanelId activePanelId() {
+    public AppPanelId activePanelId()
+    {
         return activeId;
     }
 
-    public String activeTitle() {
+    public String activeTitle()
+    {
         AppPanel panel = activeId == null ? null : panels.get(activeId);
         return panel == null ? "(none)" : panel.title();
     }
 
-    public void refreshActive() {
+    public void refreshActive()
+    {
         AppPanel panel = activeId == null ? null : panels.get(activeId);
-        if (panel != null) panel.onRefresh();
+        if (panel != null)
+            panel.onRefresh();
     }
 
-    public void saveActive() {
+    public void saveActive()
+    {
         AppPanel panel = activeId == null ? null : panels.get(activeId);
-        if (panel != null) panel.onSave();
+        if (panel != null)
+            panel.onSave();
     }
 
-    private AppPanel create(AppPanelId id) {
+    private AppPanel create(AppPanelId id)
+    {
         Supplier<AppPanel> factory = factories.get(id);
-        if (factory == null) throw new IllegalArgumentException("Unsupported panel id: " + id);
+        if (factory == null)
+            throw new IllegalArgumentException("Unsupported panel id: " + id);
         return factory.get();
     }
 }
