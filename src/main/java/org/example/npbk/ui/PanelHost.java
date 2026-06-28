@@ -9,7 +9,6 @@ import org.example.npbk.ui.report.SemanticReportPanel;
 
 import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Region;
 
 /** Lazily creates and hosts the center workspace panel. */
 public class PanelHost extends BorderPane
@@ -54,18 +53,9 @@ public class PanelHost extends BorderPane
         AppPanel panel = panels.computeIfAbsent(id, this::create);
         activeId = id;
         Node panelRoot = panel.root();
-        normalizePanelRoot(panelRoot);
+        PanelGeometry.makeResponsive(panelRoot);
         setCenter(panelRoot);
         panel.onRefresh();
-    }
-
-    private void normalizePanelRoot(Node panelRoot)
-    {
-        if (panelRoot instanceof Region region)
-        {
-            region.setMinSize(0, 0);
-            region.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        }
     }
 
     public AppPanelId activePanelId()
