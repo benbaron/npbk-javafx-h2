@@ -8,25 +8,31 @@
 .nav {
     -fx-padding: 8;
     -fx-background-color: #eef2f6;
-    -fx-min-width: 220px;
-    -fx-pref-width: 260px;
-    -fx-max-width: 360px;
 }
 .inspector {
-    -fx-min-width: 220px;
-    -fx-pref-width: 280px;
-    -fx-max-width: 360px;
+    -fx-background-color: #ffffff;
 }
 .nav-title {
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-padding: 0 0 8 0;
 }
+.workspace-split-pane {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+.workspace-split-pane > .split-pane-divider {
+    -fx-background-color: #aeb7c2;
+    -fx-padding: 0 3px 0 3px;
+}
+.workspace-split-pane > .split-pane-divider:hover {
+    -fx-background-color: #6f7f90;
+}
 .workspace-scroll-pane {
     -fx-background-color: transparent;
     -fx-min-width: 0;
     -fx-min-height: 0;
-    -fx-fit-to-width: false;
+    -fx-fit-to-width: true;
     -fx-fit-to-height: false;
 }
 .workspace-scroll-pane > .viewport {
@@ -66,6 +72,7 @@
 }
 .excel-report-grid {
     -fx-background-color: white;
+    -fx-max-width: infinity;
 }
 .excel-cell {
     -fx-border-color: #9aa4b2;
