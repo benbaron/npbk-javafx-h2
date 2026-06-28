@@ -139,20 +139,15 @@ public class SemanticReportRenderer
     private void setResponsiveTableColumnWidths(GridPane grid, JsonNode columns)
     {
         grid.getColumnConstraints().clear();
-        List<Double> weights = new ArrayList<>();
-        double totalWeight = 0;
+        List<String> labels = new ArrayList<>();
+        List<String> fields = new ArrayList<>();
         for (JsonNode column : columns)
         {
-            String label = column.path("label").asText("");
-            String field = column.path("field").asText("");
-            double weight = Math.max(6, Math.min(24, Math.max(label.length(), field.length())));
-            weights.add(weight);
-            totalWeight += weight;
+            labels.add(column.path("label").asText(""));
+            fields.add(column.path("field").asText(""));
         }
-        if (totalWeight <= 0)
-            totalWeight = 1;
-        for (double weight : weights)
-            grid.getColumnConstraints().add(percentColumn((weight / totalWeight) * 100.0, MIN_TABLE_COLUMN_WIDTH));
+        for (double percent : ReportColumnSizing.percentages(labels, fields))
+            grid.getColumnConstraints().add(percentColumn(percent, MIN_TABLE_COLUMN_WIDTH));
     }
 
     private ColumnConstraints percentColumn(double percentWidth, double minWidth)
